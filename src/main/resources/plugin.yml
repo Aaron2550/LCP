@@ -1,0 +1,6 @@
+name: LodeClaims
+version: '${project.version}'
+main: me.aaronvb.lodeclaims.LodeClaimsPlugin
+api-version: 1.17
+authors: [ AaronVB ]
+depend: [ WorldGuard ]

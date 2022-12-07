@@ -1,0 +1,17 @@
+# Claim Radius in Blocks
+claimRadius: 64
+
+# Minimum distance to other Regions
+minimumDistance: 192
+
+# Use our custom Lodestone Recipe?
+useCustomRecipe: true
+
+# Automatically set Title on Entry Flag?
+setTitleFlag: true
+
+# Clear "Sorry! You are not allowed to ___ here!" Message from WorldGuard by default?
+clearDenyMessage: true
+
+# Unclaim confirm Time in Seconds
+unclaimTime: 10
