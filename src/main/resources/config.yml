@@ -1,8 +1,8 @@
 # Claim Radius in Blocks
 claimRadius: 64
 
-# Minimum distance to other Regions
-minimumDistance: 192
+# Minimum distance from the center of one Region to the centers of other Regions
+minimumDistance: 272
 
 # Use our custom Lodestone Recipe?
 useCustomRecipe: true

@@ -69,7 +69,7 @@ public class EventListener implements Listener {
 							}
 
 							UnconfirmedLodestones.remove(block);
-						}, 200);
+						}, LodeClaimsPlugin.getPluginConfiguration().getInt("unclaimTime") * 20L);
 					}
 				} else {
 					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You are not the Owner of this Region"));
@@ -219,7 +219,8 @@ public class EventListener implements Listener {
 			BlockVector3 middlePoint =  region.getMinimumPoint().add(region.getMaximumPoint());
 			middlePoint = middlePoint.divide(2);
 
-			if (middlePoint.distance(placedBlockVector) < 272d) {
+
+			if (middlePoint.distance(placedBlockVector) < LodeClaimsPlugin.getPluginConfiguration().getInt("minimumDistance")) {
 				event.setCancelled(true);
 
 				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You are too close to another Region - Sneak to place without claiming a Region"));
@@ -239,17 +240,24 @@ public class EventListener implements Listener {
 		BlockVector3 point1 = placedBlockVector;
 		BlockVector3 point2 = placedBlockVector;
 
-		point1 = point1.add(64, 0, 64).withY(block.getWorld().getMaxHeight() - 1);
-		point2 = point2.subtract(64, 0, 64).withY(block.getWorld().getMinHeight());
+		int radius = LodeClaimsPlugin.getPluginConfiguration().getInt("claimRadius");
+		point1 = point1.add(radius, 0, radius).withY(block.getWorld().getMaxHeight() - 1); //TODO: Do we need the '-1' here?
+		point2 = point2.subtract(radius, 0, radius).withY(block.getWorld().getMinHeight());
 
-		ProtectedRegion newRegion = new ProtectedCuboidRegion("Region-" + player.getName(), point1, point2);
+		ProtectedRegion newRegion = new ProtectedCuboidRegion("region-" + player.getName(), point1, point2);
 		DefaultDomain owners = new DefaultDomain();
 
 		owners.addPlayer(player.getUniqueId());
 		newRegion.setOwners(owners);
 		newRegion.setPriority(10);
-		newRegion.setFlag(Flags.GREET_TITLE, player.getName() + "'s Region");
-		newRegion.setFlag(Flags.DENY_MESSAGE, "");
+
+		if (LodeClaimsPlugin.getPluginConfiguration().getBoolean("setTitleFlag")) {
+			newRegion.setFlag(Flags.GREET_TITLE, player.getName() + "'s Region");
+		}
+
+		if (LodeClaimsPlugin.getPluginConfiguration().getBoolean("clearDenyMessage")) {
+			newRegion.setFlag(Flags.DENY_MESSAGE, "");
+		}
 
 		manager.addRegion(newRegion);
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have claimed a 129x129 Region - Sneak to place without claiming a Region"));
