@@ -18,3 +18,6 @@ Create a new Issue [here](https://github.com/Aaron2550/LCP/issues) to suggest th
 - Only 1 Region per player
 - The distance calculation to other regions is a bit wonky as it does not consider that the region is a square
 - The owner can mine any lodestone to unclaim the region, not just the one they used to create the region
+
+### Limitations
+Keep in mind that WorldGuard cannot override vanilla's spawn protection. This means only server operators can interact with blocks that overlap with the spawn area. You can change `spawn-protection` in your server.properties to remove the vanilla portection and then protect your server's spawn using WorldGuard.
