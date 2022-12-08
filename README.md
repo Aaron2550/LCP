@@ -1,5 +1,5 @@
 # LCP
-A Spigot Plugin that allows you and your Players to claim Regions, simply by playing a Lodestone Block
+A Spigot Plugin that allows you and your Players to claim Regions, simply by placing a Lodestone Block
 
 This is the GitHub Repo for [Lode Claims on Modrinth](https://modrinth.com/mod/lode-claims-plugin)
 
