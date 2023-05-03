@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class LodeClaimsPlugin extends JavaPlugin {
 
 	private static LodeClaimsPlugin PluginInstance;
-	private static FileConfiguration PluginConfiguration;
+	static FileConfiguration PluginConfiguration;
 
 	@Override
 	public void onEnable() {

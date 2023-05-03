@@ -54,25 +54,25 @@ public class EventListener implements Listener {
 				if (region.getOwners().contains(player.getUniqueId())) {
 					if (UnconfirmedLodestones.contains(block)) {
 						UnconfirmedLodestones.remove(block);
-						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have unclaimed this Region"));
+						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(LodeClaimsPlugin.PluginConfiguration.getString("unclaimDoneMessage")));
 
 						toBeRemoved = region;
 						break;
 					} else {
-						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Mine the Lodestone again to confirm"));
+						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(LodeClaimsPlugin.PluginConfiguration.getString("unclaimConfirmMessage")));
 						event.setCancelled(true);
 
 						UnconfirmedLodestones.add(block);
 						Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> {
 							if (UnconfirmedLodestones.contains(block) && manager.getRegion("Region-" + player.getName()) != null) {
-								player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You did not confirm the unclaim"));
+								player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(LodeClaimsPlugin.PluginConfiguration.getString("unclaimFailMessage")));
 							}
 
 							UnconfirmedLodestones.remove(block);
 						}, LodeClaimsPlugin.getPluginConfiguration().getInt("unclaimTime") * 20L);
 					}
 				} else {
-					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You are not the Owner of this Region"));
+					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(LodeClaimsPlugin.PluginConfiguration.getString("notOwnerMessage")));
 					event.setCancelled(true);
 					break;
 				}
@@ -129,12 +129,12 @@ public class EventListener implements Listener {
 
 		if (members.contains(clickedPlayer.getUniqueId())) {
 			members.removePlayer(clickedPlayer.getUniqueId());
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(clickedPlayer.getName()  + " was removed from your Region"));
-			clickedPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(player.getName() + " has removed you from their Region"));
+			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Objects.requireNonNull(LodeClaimsPlugin.PluginConfiguration.getString("playerRemovedMessaged")).replace("{PLAYER}", clickedPlayer.getName())));
+			clickedPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Objects.requireNonNull(LodeClaimsPlugin.PluginConfiguration.getString("youWereRemovedMessage")).replace("{PLAYER}", player.getName())));
 		} else {
 			members.addPlayer(clickedPlayer.getUniqueId());
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(clickedPlayer.getName()  + " was added to your Region"));
-			clickedPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(player.getName() + " has added you to their Region"));
+			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Objects.requireNonNull(LodeClaimsPlugin.PluginConfiguration.getString("playerAddedMessage")).replace("{PLAYER}", clickedPlayer.getName())));
+			clickedPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Objects.requireNonNull(LodeClaimsPlugin.PluginConfiguration.getString("youWereAddedMessage")).replace("{PLAYER}", player.getName())));
 		}
 
 		region.setMembers(members);
@@ -173,12 +173,12 @@ public class EventListener implements Listener {
 
 		AbstractMap.SimpleEntry<Player, Block> data = new AbstractMap.SimpleEntry<>(player, block);
 		UnconfirmedClicks.add(data);
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Click a player to add them to your Region"));
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(LodeClaimsPlugin.PluginConfiguration.getString("clickToAddMessage")));
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> {
 			if (UnconfirmedClicks.contains(data)) {
 				UnconfirmedClicks.remove(data);
-				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("No Player was added to your Region"));
+				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(LodeClaimsPlugin.PluginConfiguration.getString("addPlayerTimeoutMessage")));
 			}
 		}, 200);
 	}
@@ -208,9 +208,10 @@ public class EventListener implements Listener {
 			if (region.getOwners().contains(player.getUniqueId())) {
 				event.setCancelled(true);
 
-				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have already claimed a Region - Sneak to place without claiming a Region"));
-				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have already claimed a Region - Sneak to place without claiming a Region")), 30);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have already claimed a Region - Sneak to place without claiming a Region")), 30);
+				String tooManyRegionsMessage = LodeClaimsPlugin.PluginConfiguration.getString("tooManyRegionsMessage");
+				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(tooManyRegionsMessage));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(tooManyRegionsMessage)), 30);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(tooManyRegionsMessage)), 30);
 
 				canCreateRegion = false;
 				break;
@@ -223,9 +224,10 @@ public class EventListener implements Listener {
 			if (middlePoint.distance(placedBlockVector) < LodeClaimsPlugin.getPluginConfiguration().getInt("minimumDistance")) {
 				event.setCancelled(true);
 
-				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You are too close to another Region - Sneak to place without claiming a Region"));
-				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You are too close to another Region - Sneak to place without claiming a Region")), 30);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You are too close to another Region - Sneak to place without claiming a Region")), 30);
+				String tooCloseMessage = LodeClaimsPlugin.PluginConfiguration.getString("tooCloseMessage");
+				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(tooCloseMessage));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(tooCloseMessage)), 30);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(tooCloseMessage)), 30);
 
 
 				canCreateRegion = false;
@@ -252,7 +254,7 @@ public class EventListener implements Listener {
 		newRegion.setPriority(10);
 
 		if (LodeClaimsPlugin.getPluginConfiguration().getBoolean("setTitleFlag")) {
-			newRegion.setFlag(Flags.GREET_TITLE, player.getName() + "'s Region");
+			newRegion.setFlag(Flags.GREET_TITLE, Objects.requireNonNull(LodeClaimsPlugin.PluginConfiguration.getString("regionNameTemplate")).replace("{PLAYER}", player.getName()));
 		}
 
 		if (LodeClaimsPlugin.getPluginConfiguration().getBoolean("clearDenyMessage")) {
@@ -260,8 +262,10 @@ public class EventListener implements Listener {
 		}
 
 		manager.addRegion(newRegion);
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have claimed a 129x129 Region - Sneak to place without claiming a Region"));
-		Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have claimed a 129x129 Region - Sneak to place without claiming a Region")), 30);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have claimed a 129x129 Region - Sneak to place without claiming a Region")), 30);
+
+		String claimDoneMessage = LodeClaimsPlugin.PluginConfiguration.getString("claimDoneMessage");
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(claimDoneMessage));
+		Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(claimDoneMessage)), 30);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(LodeClaimsPlugin.getPluginInstance(), () -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(claimDoneMessage)), 30);
 	}
 }

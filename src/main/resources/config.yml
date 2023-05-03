@@ -15,3 +15,26 @@ clearDenyMessage: true
 
 # Unclaim confirm Time in Seconds
 unclaimTime: 10
+
+# Below are all Messages used in the Plugin. You can configure them however you like.
+
+tooManyRegionsMessage: "You have already claimed a Region - Sneak to place without claiming a Region"
+tooCloseMessage: "You are too close to another Region - Sneak to place without claiming a Region"
+claimDoneMessage: "You have claimed a 129x129 Region - Sneak to place without claiming a Region"
+
+unclaimDoneMessage: "You have unclaimed this Region"
+unclaimConfirmMessage: "Mine the Lodestone again to confirm"
+unclaimFailMessage: "You did not confirm the unclaim"
+
+notOwnerMessage: "You are not the Owner of this Region"
+
+clickToAddMessage: "Click a player to add them to your Region"
+addPlayerTimeoutMessage: "No Player was added to your Region"
+
+playerRemovedMessaged: "{PLAYER} was removed from your Region"
+youWereRemovedMessage: "{PLAYER} has removed you from their Region"
+
+playerAddedMessage: "{PLAYER} was added to your Region"
+youWereAddedMessage: "{PLAYER} has added you to their Region"
+
+regionNameTemplate: "{PLAYER}'s Region"
